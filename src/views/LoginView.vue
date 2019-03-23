@@ -1,45 +1,55 @@
 <template>
-    <div class="container border border-dark" >
-        <h1>Login</h1>
-        <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+    <div>
+        <Nav :logged-in="true"></Nav>
+        <div class="container border border-dark">
 
-            <b-form-group id="exampleInputGroup2" label="Username:" label-for="exampleInput2">
-                <b-form-input
 
-                        id="exampleInput2"
-                        type="text"
-                        v-model="form.username"
-                        required
-                        placeholder="Enter username" />
-            </b-form-group>
+            <h1>Login</h1>
+            <b-form @submit="onSubmit" @reset="onReset" v-if="show">
 
-            <b-form  @submit.prevent>
-                <label for="textPassword">Password:</label>
-                <b-input type="password"
-                         id="textPassword"
-                         aria-describedby="passwordHelpBlock"
-                         placeholder="Enter password"
-                         required
-                         v-model="form.password"/>
+                <b-form-group id="exampleInputGroup2" label="Username:" label-for="exampleInput2">
+                    <b-form-input
+
+                            id="exampleInput2"
+                            type="text"
+                            v-model="form.username"
+                            required
+                            placeholder="Enter username"/>
+                </b-form-group>
+
+                <b-form @submit.prevent>
+                    <label for="textPassword">Password:</label>
+                    <b-input type="password"
+                             id="textPassword"
+                             aria-describedby="passwordHelpBlock"
+                             placeholder="Enter password"
+                             required
+                             v-model="form.password"/>
+                </b-form>
+
+
+                <b-button href="/register" variant="outline-secondary" class="signup">Sign up</b-button>
+                <b-button type="submit" variant="secondary" class="signin">Sign in</b-button>
             </b-form>
-
-
-            <b-button href="/register" variant="outline-secondary" class="signup">Sign up</b-button>
-            <b-button type="submit" variant="secondary" class="signin">Sign in</b-button>
-        </b-form>
+        </div>
     </div>
 </template>
 
 <script>
 
+    import axios from "axios";
+    import Nav from "@/components/Nav";
+
     export default {
         computed: {
-            username () {
-                // We will see what `params` is shortly
+            username() {
                 return this.$route.params.username
             }
         },
         name: 'Login',
+        components: {
+            Nav
+        },
         data() {
             return {
                 form: {
@@ -50,14 +60,28 @@
             }
         },
         methods: {
-            goBack () {
+            goBack() {
                 window.history.length > 1
                     ? this.$router.go(-1)
                     : this.$router.push('/')
             },
             onSubmit(evt) {
+
+                axios.post('http://localhost:8080/login', {username: this.form.username, password: this.form.password})
+                    .then(response => {
+                            if (response.data.admin) {
+                                console.log(response);
+                                this.$router.push('/admin')
+                            } else {
+                                console.log(response)
+                                this.$router.push('/dashboard')
+                            }
+                        },
+                        error => {
+                            this.$router.push('/login');
+                            this.onReset(evt);
+                        })
                 evt.preventDefault()
-                alert(JSON.stringify(this.form))
 
             },
             onReset(evt) {
@@ -78,16 +102,19 @@
     h1 {
         margin-bottom: 40px;
     }
+
     .container {
         max-width: 20%;
         margin-top: 5%;
         border-color: dimgrey;
         padding: 50px 30px 50px 30px;
     }
+
     .signup {
         margin-top: 35px;
         margin-right: 10px;
     }
+
     .signin {
         margin-top: 35px;
         background-color: #623b5a;

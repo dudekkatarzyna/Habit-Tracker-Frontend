@@ -74,7 +74,7 @@
         data() {
             return {
                 form: {
-                    firstMame: '',
+                    firstName: '',
                     lastName: '',
                     username: '',
                     password: '',
@@ -90,16 +90,20 @@
                     : this.$router.push('/')
             },
             onSubmit(evt) {
-                evt.preventDefault()
-                //alert(JSON.stringify(this.form))
 
-                axios.post('http://localhost:8080/user/create')
+                axios.post('http://localhost:8080/register', {
+                    username: this.form.username,
+                    password: this.form.password,
+                    confirmPassword: this.form.confirmPassword,
+                    name: this.form.firstName,
+                    surname: this.form.lastName,
+                    habitsPerUserId: []
+                })
                     .then(response => {
-                        //  console.log(response);
-                        this.fromBackend = response.data
                         console.log(response)
+                        this.$router.push('/dashboard')
                     })
-
+                evt.preventDefault()
             },
             onReset(evt) {
                 evt.preventDefault()

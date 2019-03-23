@@ -1,8 +1,11 @@
 <template>
     <div id="app">
-        <Nav :logged-in="true"></Nav>
+
+        <Nav :logged-in="false"></Nav>
         <Header/>
 
+        <ButtonGroup/>
+        <ContentTable/>
     </div>
 </template>
 
@@ -23,13 +26,6 @@
         },
         data() {
             return {
-                items: [
-                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
-                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
-                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
-                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
-
-                ],
                 fromBackend: 'null',
                 numerOfUsers: 2
             }
@@ -43,15 +39,6 @@
                 })
 
         },
-        methods: {
-            getNumerOfUsers() {
-                axios.post('http://localhost:8080/api/user-count')
-                    .then(response => {
-                        //  console.log(response);
-                        this.numerOfUsers = response.data
-                    })
-            }
-        }
 
     }
 </script>

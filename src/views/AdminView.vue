@@ -1,20 +1,11 @@
 <template>
-    <div>
+    <div id="app">
 
-        <h3 class="float-left">HABITS LIST</h3>
+        <Nav :logged-in="false"></Nav>
+        <Header/>
 
-        <b-table striped hover :items="items" class="table"/>
-
-
-        <ul>
-            <li v-for="user of numerOfUsers">
-                <h1>{{fromBackend}}</h1>
-
-            </li>
-        </ul>
-        <button @click="getNumerOfUsers">
-            Nic
-        </button>
+        <ButtonGroup/>
+        <ContentTable/>
     </div>
 </template>
 
@@ -22,26 +13,36 @@
     import Header from "@/components/Header";
     import axios from "axios";
     import ButtonGroup from "@/components/ButtonGroup";
+    import ContentTable from "@/components/ContentTable";
 
     export default {
-        name: 'app',
+        name: 'adminView',
         components: {
             Header,
             ButtonGroup,
+            ContentTable,
         },
         data() {
             return {
                 items: [
-                    {Name: '', Category: '', Done: '', Date: '', Action: ''},
+                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
+                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
+                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
+                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
 
                 ],
                 fromBackend: 'null',
-                userId: 0,
                 numerOfUsers: 2
             }
         },
         mounted() {
-            this.getId();
+
+            axios.post('http://localhost:8080/api/hello')
+                .then(response => {
+                    //  console.log(response);
+                    this.fromBackend = response.data
+                })
+
         },
         methods: {
             getNumerOfUsers() {
@@ -50,27 +51,6 @@
                         //  console.log(response);
                         this.numerOfUsers = response.data
                     })
-            },
-            getId() {
-                axios.get('http://localhost:8080/userId')
-                    .then((response => {
-                        console.log(response)
-                        this.userId=response
-                    }))
-            },
-            getUser() {
-                axios.get('http://localhost:8080/user/' + this.session.userId)
-                    .then((response) => {
-                        console.log(response)
-                    })
-            },
-            getHabits() {
-                axios.get('http://localhost:8080/habitsPerUser/habitsList')
-                    .then((function (response) {
-                        console.log(response)
-                        this.fromBackend = response.data
-                    }))
-
             }
         }
 

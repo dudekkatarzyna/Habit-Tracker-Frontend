@@ -5,7 +5,7 @@
     <b-img v-bind="mainProps" blank-color="#A7A9A5" alt="HEX color image"/>
     <h2>Habit tracker </h2>
     <h4>Improve yourself </h4>
-    <b-button variant="outline-primary">Start tracking</b-button>
+    <b-button v-on:click="login" variant="outline-primary">Start tracking</b-button>
 </div>
 
     </div>
@@ -17,6 +17,11 @@
             return {
                 mainProps: { blank: true, width: 75, height: 75, class: 'm1' }
 
+            }
+        },
+        methods: {
+            login() {
+                this.$router.push('/login')
             }
         }
 

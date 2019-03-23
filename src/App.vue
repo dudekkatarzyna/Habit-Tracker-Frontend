@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        <Nav/>
 <!--        <p>
             <router-link to="/foo">Go to Foo</router-link>
             <router-link to="/bar">Go to Bar</router-link>
@@ -26,4 +25,8 @@
         margin-top: 0 !important;
         font-family: Monserrat,serif;
     }
+    .nav-item {
+        list-style: none;
+    }
+
 </style>

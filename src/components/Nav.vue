@@ -1,9 +1,11 @@
 <template>
     <div>
+
         <b-navbar toggleable="lg" type="dark" variant="info">
             <b-navbar-brand href="/">HABIT TRACKER</b-navbar-brand>
 
-            <b-nav-item href="/login">LOGIN</b-nav-item>
+            <b-nav-item v-if="loggedIn" to="/login">LOGIN</b-nav-item>
+            <b-nav-item v-else v-on:click="logout">LOG OUT</b-nav-item>
 
 
         </b-navbar>
@@ -11,20 +13,32 @@
 </template>
 
 <script>
+    import axios from "axios";
+
     export default {
+        props: ['loggedIn'],
         data() {
             return {
                 slide: 0,
                 sliding: null
             }
         },
-
+        methods: {
+            logout() {
+                axios.get('http://localhost:8080/logout')
+                    .then(response => {
+                            this.$router.push('/')
+                        }
+                    )
+            }
+        }
     }
 </script>
 <style scoped>
     .navbar-brand {
         color: #594458 !important;
     }
+
     .nav-link {
         color: #594458;
         text-align: right;

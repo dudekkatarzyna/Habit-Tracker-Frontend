@@ -3,28 +3,7 @@
         <div class="container">
             <b-row>
                 <div class="col-sm-6 text-right">
-                    <b-button v-b-modal.modal1 class="new-habit">+ new habit</b-button>
-                    <!-- Modal Component -->
-                    <b-modal
-                            id="modal1"
-                            title="Add new habit">
-                        <!--:footer-bg-variant="footerBgVariant"-->
-
-                        <b-form inline>
-                            <label class="sr-only" for="inlineFormInputName2">Habit:</label>
-                            <b-input class="mb-2 mr-sm-2 mb-sm-0" id="inlineFormInputName2" placeholder="Habit"/>
-
-                            <label class="mr-sm-2" for="inlineFormCustomSelectPref">Category:</label>
-                            <b-form-select
-                                    class="mb-2 mr-sm-2 mb-sm-0"
-                                    :value="null"
-                                    :options="{ '1':'Excercise','2': 'Food', '3':'Self-care','4': 'Skill' }"
-                                    id="inlineFormCustomSelectPref"
-                            />
-                        </b-form>
-
-
-                    </b-modal>
+                   <NewHabitModal/>
                 </div>
                 <div class="col-sm-6 text-left">
                     <b-button-group>
@@ -53,12 +32,17 @@
 </template>
 
 <script>
+    import NewHabitModal from "@/components/NewHabitModal";
+
     export default {
         data() {
             return {
                 mainProps: {blank: true, width: 75, height: 75, class: 'm1'}
 
             }
+        },
+        components: {
+            NewHabitModal
         }
 
     }
