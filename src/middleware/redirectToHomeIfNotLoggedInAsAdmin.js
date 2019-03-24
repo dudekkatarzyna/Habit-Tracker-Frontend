@@ -1,10 +1,14 @@
+import {store} from "@/main";
+
+
+
 const redirectToHomeIfNotLoggedInAsAdmin = (req, res, next) => {
 
-    if (!req.session.isAdmin) {
-        res.redirect('/dashboard');
+    if (!store.getters.isAdmin) {
+        return false
     } else {
-        next();
+        return true;
     }
 };
 
-module.exports = redirectToHomeIfNotLoggedInAsAdmin;
+export default redirectToHomeIfNotLoggedInAsAdmin;

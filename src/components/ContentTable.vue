@@ -6,15 +6,6 @@
         <b-table striped hover :items="items" class="table"/>
 
 
-        <ul>
-            <li v-for="user of numerOfUsers">
-                <h1>{{fromBackend}}</h1>
-
-            </li>
-        </ul>
-        <button @click="getNumerOfUsers">
-            Nic
-        </button>
     </div>
 </template>
 
@@ -22,6 +13,7 @@
     import Header from "@/components/Header";
     import axios from "axios";
     import ButtonGroup from "@/components/ButtonGroup";
+    import {store} from "@/main";
 
     export default {
         name: 'app',
@@ -31,47 +23,46 @@
         },
         data() {
             return {
-                items: [
-                    {Name: '', Category: '', Done: '', Date: '', Action: ''},
-
-                ],
-                fromBackend: 'null',
-                userId: 0,
-                numerOfUsers: 2
+                items: [],
+                habitsPerUserId: [],
+                habitsDetails: [],
+                fromBackend: 'null'
             }
         },
         mounted() {
-            this.getId();
+            this.getHabitDetails().then(() => {
+                    console.log(this.items)
+                }
+            );
+
         },
         methods: {
-            getNumerOfUsers() {
-                axios.post('http://localhost:8080/api/user-count')
-                    .then(response => {
-                        //  console.log(response);
-                        this.numerOfUsers = response.data
-                    })
-            },
-            getId() {
-                axios.get('http://localhost:8080/userId')
-                    .then((response => {
-                        console.log(response)
-                        this.userId=response
-                    }))
-            },
-            getUser() {
-                axios.get('http://localhost:8080/user/' + this.session.userId)
-                    .then((response) => {
-                        console.log(response)
-                    })
-            },
-            getHabits() {
-                axios.get('http://localhost:8080/habitsPerUser/habitsList')
-                    .then((function (response) {
-                        console.log(response)
-                        this.fromBackend = response.data
-                    }))
+            createItems() {
 
+
+            },
+            async getHabitDetails() {
+                await axios.get(`http://localhost:8080/user/${store.state.userId}`)
+                    .then(response => {
+                        this.habitsPerUserId = response.data.habitsPerUserId;
+                    });
+
+                for (let i = 0; i < this.habitsPerUserId.length; i++) {
+                    await axios.get(`http://localhost:8080/habitsPerUser/details/${this.habitsPerUserId[i]}`)
+                        .then(response => {
+                            console.log(response.data)
+                            this.items.push({
+                                    Name: response.data.name,
+                                    Category: response.data.categoryId,
+                                    Date: response.data.done
+                                }
+                            );
+                            //console.log(this.habitsDetails)
+                        })
+                }
             }
+
+
         }
 
     }

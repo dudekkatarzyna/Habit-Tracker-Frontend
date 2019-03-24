@@ -40,6 +40,7 @@
     import axios from "axios";
     import Nav from "@/components/Nav";
 
+
     export default {
         computed: {
             username() {
@@ -69,11 +70,17 @@
 
                 axios.post('http://localhost:8080/login', {username: this.form.username, password: this.form.password})
                     .then(response => {
+
+                        //mutations
+                        console.log(response.data._id)
+
+                        this.$store.commit('setUserId', response.data._id)
+                        this.$store.commit('setAdmin', response.data.isAdmin)
+
+
                             if (response.data.admin) {
-                                console.log(response);
                                 this.$router.push('/admin')
                             } else {
-                                console.log(response)
                                 this.$router.push('/dashboard')
                             }
                         },

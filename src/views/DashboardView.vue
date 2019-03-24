@@ -32,6 +32,7 @@
         },
         mounted() {
 
+           // console.log(this.$store.getters.userId)
             axios.post('http://localhost:8080/api/hello')
                 .then(response => {
                     //  console.log(response);

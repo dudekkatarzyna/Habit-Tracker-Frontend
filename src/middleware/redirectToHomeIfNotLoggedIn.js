@@ -1,11 +1,15 @@
+import {store} from "./../main.js";
+
 const redirectToHomeIfNotLoggedIn = (req, res, next) => {
 
-    console.log('middle');
-    if (req.session.userId && req.cookies.user_sid) {
-        next();
+    console.log('middle: '+store.getters.userId);
+
+    if (store.getters.userId) {
+        return true;
+       // next();
     } else {
-        res.redirect('/');
+        return false;
     }
 };
 
-module.exports = redirectToHomeIfNotLoggedIn;
+export default redirectToHomeIfNotLoggedIn;

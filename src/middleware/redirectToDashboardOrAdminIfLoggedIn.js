@@ -1,13 +1,14 @@
+import {store} from "@/main";
+
 const redirectToDashboardOrAdminIfLoggedIn = (req, res, next) => {
-    console.log("hej")
-    console.log(req.session.userId)
-    console.log(req.cookies.user_sid)
-    if (req.session.userId && req.cookies.user_sid) {
+
+
+    if (store.getters.userId) {
         
-        if (req.session.isAdmin) {
-            res.redirect('/admin');
+        if (store.getters.isAdmin) {
+            return 'admin'
         } else {
-            res.redirect('/dashboard');
+            return 'dashboard'
         }
 
     } else {
@@ -15,4 +16,4 @@ const redirectToDashboardOrAdminIfLoggedIn = (req, res, next) => {
     }
 };
 
-module.exports = redirectToDashboardOrAdminIfLoggedIn;
+export default redirectToDashboardOrAdminIfLoggedIn;
