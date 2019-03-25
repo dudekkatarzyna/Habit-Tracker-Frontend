@@ -5,7 +5,9 @@
         <Header/>
 
         <ButtonGroup/>
-        <ContentTable/>
+
+        <UserList/>
+        <HabitListAdmin/>
     </div>
 </template>
 
@@ -14,13 +16,18 @@
     import axios from "axios";
     import ButtonGroup from "@/components/ButtonGroup";
     import ContentTable from "@/components/ContentTable";
+    import Nav from "@/components/Nav";
+    import UserList from "@/components/UserList";
+    import HabitListAdmin from "@/components/HabitListAdmin";
 
     export default {
         name: 'adminView',
         components: {
+            Nav,
             Header,
             ButtonGroup,
-            ContentTable,
+            HabitListAdmin,
+            UserList,
         },
         data() {
             return {

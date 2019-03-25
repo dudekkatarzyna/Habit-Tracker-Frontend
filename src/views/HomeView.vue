@@ -23,13 +23,6 @@
         },
         data() {
             return {
-                items: [
-                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
-                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
-                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
-                    {Name: true, Category: 40, Done: 'Dickerson', Date: 'Macdonald', Action: 'no'},
-
-                ],
                 fromBackend: 'null',
                 numerOfUsers: 2
             }

@@ -4,8 +4,8 @@
         <Nav :logged-in="false"></Nav>
         <Header/>
 
-        <ButtonGroup/>
-        <ContentTable/>
+        <ButtonGroup @createdNewHabit="createdNewHabit"/>
+        <ContentTable ref="contentTable"/>
     </div>
 </template>
 
@@ -23,6 +23,12 @@
             Header,
             ButtonGroup,
             ContentTable,
+        },
+        methods: {
+            createdNewHabit(habit){
+                console.log(habit);
+                this.$refs.contentTable.append(habit);
+            }
         },
         data() {
             return {

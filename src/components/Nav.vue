@@ -14,6 +14,7 @@
 
 <script>
     import axios from "axios";
+    import {store} from "@/main";
 
     export default {
         props: ['loggedIn'],
@@ -25,11 +26,11 @@
         },
         methods: {
             logout() {
-                axios.get('http://localhost:8080/logout')
-                    .then(response => {
-                            this.$router.push('/')
-                        }
-                    )
+
+                this.$store.commit('setUserId', null);
+                this.$router.push('/')
+
+
             }
         }
     }

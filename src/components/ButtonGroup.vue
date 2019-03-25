@@ -3,7 +3,7 @@
         <div class="container">
             <b-row>
                 <div class="col-sm-6 text-right">
-                   <NewHabitModal/>
+                   <NewHabitModal @createdNewHabit="createdNewHabit"/>
                 </div>
                 <div class="col-sm-6 text-left">
                     <b-button-group>
@@ -43,6 +43,12 @@
         },
         components: {
             NewHabitModal
+        },
+        methods: {
+            createdNewHabit(habit) {
+                console.log(habit)
+                this.$emit('createdNewHabit', habit)
+            }
         }
 
     }

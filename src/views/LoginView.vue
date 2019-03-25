@@ -73,9 +73,10 @@
 
                         //mutations
                         console.log(response.data._id)
+                        console.log(response.data.admin)
 
                         this.$store.commit('setUserId', response.data._id)
-                        this.$store.commit('setAdmin', response.data.isAdmin)
+                        this.$store.commit('setAdmin', response.data.admin)
 
 
                             if (response.data.admin) {
