@@ -60,14 +60,17 @@
                 this.$refs.myModalRef.hide()
             },
             submit() {
+
+                console.log(this.selected)
+                console.log(this.options)
                 axios.post('http://localhost:8080/habitsperuser/create', {
                     habitName: this.form.name,
-                    categoryId: this.selected,
+                    category: this.selected,
                     userId: store.state.userId,
                     isAdmin: store.state.isAdmin
                 })
                     .then(response => {
-                        console.log('response',response)
+                        console.log('selected',this.selected)
                         this.habitId = response.data._id;
                         this.hideModal()
 

@@ -18,33 +18,14 @@
         components: {
             Nav,
             Header,
-            ButtonGroup,
-            ContentTable,
         },
         data() {
-            return {
-                fromBackend: 'null',
-                numerOfUsers: 2
-            }
+            return {}
         },
         mounted() {
 
-            axios.post('http://localhost:8080/api/hello')
-                .then(response => {
-                    //  console.log(response);
-                    this.fromBackend = response.data
-                })
-
         },
-        methods: {
-            getNumerOfUsers() {
-                axios.post('http://localhost:8080/api/user-count')
-                    .then(response => {
-                        //  console.log(response);
-                        this.numerOfUsers = response.data
-                    })
-            }
-        }
+        methods: {}
 
     }
 </script>

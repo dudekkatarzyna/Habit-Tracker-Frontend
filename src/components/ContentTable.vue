@@ -3,25 +3,33 @@
 
         <h3 class="float-left">HABITS LIST</h3>
 
-        <b-table striped hover :items="items" :fields="fields" class="table">
+        <b-table striped hover :items="filteredHabits" :fields="fields" class="table">
             <template slot="Action" slot-scope="row">
                 <b-button v-on:click="deleteRow(row.index)" size="sm" class="mr-2">
                     Delete
                 </b-button>
+
             </template>
 
             <template slot="Done" slot-scope="row">
-                <b-form-checkbox-group id="checkboxes2" name="flavour2" v-model="selected">
-                <input ref="checkbox" class="form-check-input mark-done" type="checkbox" data-timestamp="getDate(date, 3).getTime()}" data-habit="${data[prop]._id}" id="inlineCheckbox1-${data[prop]._id}" value="option1" >
-                <label class="form-check-label" for="inlineCheckbox1-${data[prop]._id}"> {{days[getDate(new Date(), 3).getDay()]}}</label>
-                <input class="form-check-input mark-done" type="checkbox" data-timestamp="${getDate(date, 2).getTime()}" data-habit="${data[prop]._id}" id="inlineCheckbox2-${data[prop]._id}" value="option2" >
-                <label class="form-check-label" for="inlineCheckbox2-${data[prop]._id}">{{days[getDate(new Date(), 2).getDay()]}}</label>
-                <input class="form-check-input mark-done" type="checkbox" data-timestamp="${getDate(date, 1).getTime()}" data-habit="${data[prop]._id}" id="inlineCheckbox3-${data[prop]._id}" value="option3" >
-                <label class="form-check-label" for="inlineCheckbox3-${data[prop]._id}">{{days[getDate(new Date(), 1).getDay()]}}</label>
-                <input class="form-check-input mark-done latest" type="checkbox" data-timestamp="${new Date().getTime()}" data-habit="${data[prop]._id}" id="inlineCheckbox4-${data[prop]._id}" value="option4" >
-                <label class="form-check-label" for="inlineCheckbox4-${data[prop]._id}">{{days[new Date().getDay()]}}</label>
-                </b-form-checkbox-group>
+
+                <div class="form-check form-check-inline">
+
+                    <template v-for="(checkbox,index) in items[row.index].Checkboxes">
+
+                        <input class="form-check-input mark-done" type="checkbox"
+                               :checked="checkbox.checked"
+                               :disabled="checkbox.checked"
+                               v-on:click="sendClicked(checkbox.habitId,checkbox.completionDate,row.index)"
+                               :id="'inlineCheckbox'+index">
+                        <label class="form-check-label" :for="'inlineCheckbox'+index">{{days[checkbox.completionDate.getDay()]}}</label>
+
+                    </template>
+
+                </div>
+
             </template>
+
         </b-table>
 
     </div>
@@ -41,52 +49,66 @@
         },
         data() {
             return {
+                checked: '',
+                checkIfDisabled: "checked",
                 fields: ['Name', 'Category', 'Done', 'Date', 'Action'],
                 items: [],
                 habitsPerUserId: [],
                 habitsDetails: [],
                 selected: [],
-                options: [
-                    {text: 'Monday', value: 'orange'},
-                    {text: 'Tuesday', value: 'apple'},
-                    {text: 'Wednesday', value: 'pineapple'},
-                    {text: 'Thursday', value: 'grape'},
-                    {text: 'Friday', value: 'grape'},
-                    {text: 'Saturday', value: 'grape'},
-                    {text: 'Sunday', value: 'grape'}
-                ],
-                fromBackend: 'null',
-                days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+                filter: '',
+                days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
 
-        }
+
+            }
         },
         mounted() {
-            this.getHabitDetails().then(() => {
-                  //  this.$refs.checkbox
-                }
-            );
-
+            this.getHabitDetails();
+        },
+        computed: {
+            filteredHabits() {
+                return this.items.filter((habit) =>{
+                    return habit.Name.includes(this.filter)
+                });
+            }
         },
         methods: {
-            checked(){
-                console.log(this.selected)
+            filterChange(filter) {
+                this.filter = filter;
+
+            },
+            checkIfCompleted(done, completionDate) {
+
+                for (const date of done) {
+                    const data = new Date(date);
+                    if (data.getDay() === completionDate.getDay() && data.getMonth() === completionDate.getMonth() && data.getFullYear() === completionDate.getFullYear())
+                        return true;
+                }
+                return false;
+            },
+            sendClicked(habitId, date, index) {
+
+
+                axios.put(`http://localhost:8080/habitsperuser/${habitId}/update`, {date})
+                    .then((response) => {
+                        // console.log(response)
+                    })
+
+
+                this.items[index].Date = this.items[index].Date.concat(", " + this.formatDate(date))
             },
             getDate(date, daysBefore) {
                 return new Date(new Date(date).getTime() - daysBefore * 1000 * 60 * 60 * 24);
             },
             async append(habit) {
-
                 await axios.get(`http://localhost:8080/category/details/${habit.categoryId}`)
                     .then(response => {
                         this.items.push({
                             Name: habit.name,
                             Category: response.data.name,
                             Date: habit.done
-
                         })
                     });
-
-
             },
             deleteRow(index) {
                 // console.log(`http://localhost:8080/habitsPerUser/${this.habitsPerUserId[index]}/delete`)
@@ -106,30 +128,47 @@
 
             },
             async getHabitDetails() {
-                await axios.get(`http://localhost:8080/user/${store.state.userId}`)
-                    .then(response => {
-                        this.habitsPerUserId = response.data.habitsPerUserId;
-                    });
+                const response = await axios.get(`http://localhost:8080/user/${store.state.userId}`)
+
+                console.log(response)
+                this.habitsPerUserId = response.data.habitsPerUserId;
+
 
                 for (let i = 0; i < this.habitsPerUserId.length; i++) {
-                    await axios.get(`http://localhost:8080/habitsPerUser/details/${this.habitsPerUserId[i]}`)
-                        .then(response => {
 
-                            let format = this.formatDates(response.data.done);
+                    const habitCheckboxes = [];
+                    console.log("here", this.habitsPerUserId[i])
 
+                    const response = await axios.get(`http://localhost:8080/habitsPerUser/details/${this.habitsPerUserId[i]}`)
 
-                            this.items.push({
-                                    Name: response.data.name,
-                                    Category: response.data.categoryId,
-                                    Date: format.join(`,\n`)
-                                }
-                            );
-                        });
+                    for (let j = 0; j < 5; j++) {
+                        const completionDate = this.getDate(new Date(), j);
 
-                    await axios.get(`http://localhost:8080/category/details/${this.items[i].Category}`)
-                        .then(response => {
-                            this.items[i].Category = response.data.name;
+                        const checked = this.checkIfCompleted(response.data.done.slice(-5), completionDate);
+
+                        habitCheckboxes.push({
+                            completionDate,
+                            checked,
+                            habitId: this.habitsPerUserId[i],
+                            key: `${this.habitsPerUserId[i]}${j}`
                         })
+                    }
+
+                    let format = this.formatDates(response.data.done);
+
+                    this.items.push({
+                            Id: response.data._id,
+                            Name: response.data.name,
+                            Category: response.data.categoryId,
+                            Date: format.join(`,\n`),
+                            Checkboxes: habitCheckboxes
+                        }
+                    );
+
+                    const responseDetails = await axios.get(`http://localhost:8080/category/details/${this.items[i].Category}`)
+
+                    this.items[i].Category = responseDetails.data.name;
+
                 }
             },
             formatDate(date) {
@@ -145,7 +184,8 @@
                 const year = date.getFullYear();
 
                 return day + ' ' + monthNames[monthIndex] + ' ' + year;
-            },
+            }
+            ,
             formatDates(dates) {
                 let newDates = [];
                 for (const date of dates) {
@@ -158,7 +198,15 @@
     }
 </script>
 
-<style>
+<style scoped>
+
+    .form-check-input:disabled ~ .form-check-label {
+        color: #212529;
+    }
+
+    .form-check-input:disabled + .form-check-label {
+        color: #6c757d;
+    }
     #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;

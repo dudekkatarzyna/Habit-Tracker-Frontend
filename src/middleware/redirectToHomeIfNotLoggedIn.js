@@ -2,8 +2,6 @@ import {store} from "./../main.js";
 
 const redirectToHomeIfNotLoggedIn = (req, res, next) => {
 
-    console.log('middle: '+store.getters.userId);
-
     if (store.getters.userId) {
         return true;
        // next();

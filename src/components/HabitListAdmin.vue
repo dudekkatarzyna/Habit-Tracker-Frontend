@@ -42,7 +42,23 @@
 
         },
         methods: {
+            deleteRow(index) {
+                // console.log(`http://localhost:8080/habitsPerUser/${this.habitsPerUserId[index]}/delete`)
+                axios.delete(`http://localhost:8080/habitsPerUser/${this.habitsPerUserId[index]}/delete`)
 
+                axios.post(`http://localhost:8080/user/deleteHabit/${this.habitsPerUserId[index]}`, {
+                    userId: store.state.userId,
+                    habitId: this.habitsPerUserId[index]
+                })
+                    .then((response) => {
+                        this.items.splice(index, 1)
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+
+                    });
+
+            },
             async getHabitDetails() {
                 await axios.get(`http://localhost:8080/habitsperuser/habitslist`)
                     .then(async response => {

@@ -5,24 +5,13 @@
                 <div class="col-sm-6 text-right">
                    <NewHabitModal @createdNewHabit="createdNewHabit"/>
                 </div>
-                <div class="col-sm-6 text-left">
-                    <b-button-group>
+                <div class="col-sm-6 text-right">
 
-                        <b-dropdown text="Filter" variant="outline-dark">
-                            <b-dropdown-item>Done today</b-dropdown-item>
-                            <b-dropdown-item>To be done</b-dropdown-item>
 
-                            <b-dd-divider/>
-                            <b-dropdown-header> Category</b-dropdown-header>
-                            <b-dropdown-item href="#">excercise</b-dropdown-item>
-                            <b-dropdown-item href="#">food</b-dropdown-item>
-                            <b-dropdown-item href="#">self-care</b-dropdown-item>
-                            <b-dropdown-item href="#">skill</b-dropdown-item>
+                    <b-input-group prepend="Search names">
+                        <b-form-input v-model="search" @change="searchName"></b-form-input>
 
-                        </b-dropdown>
-                        <b-button variant="outline-secondary">reset</b-button>
-                    </b-button-group>
-
+                    </b-input-group>
 
                 </div>
             </b-row>
@@ -37,8 +26,8 @@
     export default {
         data() {
             return {
-                mainProps: {blank: true, width: 75, height: 75, class: 'm1'}
-
+                mainProps: {blank: true, width: 75, height: 75, class: 'm1'},
+                search: ''
             }
         },
         components: {
@@ -48,6 +37,10 @@
             createdNewHabit(habit) {
                 console.log(habit)
                 this.$emit('createdNewHabit', habit)
+            },
+            searchName(){
+                console.log('search',this.search)
+                this.$emit('filterChange',this.search)
             }
         }
 

@@ -4,7 +4,7 @@
         <Nav :logged-in="false"></Nav>
         <Header/>
 
-        <ButtonGroup/>
+        <!--<ButtonGroup/>-->
 
         <UserList/>
         <HabitListAdmin/>
