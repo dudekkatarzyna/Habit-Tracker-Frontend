@@ -1,20 +1,16 @@
 <template>
     <div>
-
         <b-navbar toggleable="lg" type="dark" variant="info">
             <b-navbar-brand href="/">HABIT TRACKER</b-navbar-brand>
 
             <b-nav-item v-if="loggedIn" to="/login">LOGIN</b-nav-item>
             <b-nav-item v-else v-on:click="logout">LOG OUT</b-nav-item>
 
-
         </b-navbar>
     </div>
 </template>
 
 <script>
-    import axios from "axios";
-    import {store} from "@/main";
 
     export default {
         props: ['loggedIn'],

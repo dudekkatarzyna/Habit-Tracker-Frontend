@@ -1,6 +1,11 @@
 <template>
-    <div>
-        <b-button v-b-modal.modal1 class="new-habit">+ new habit</b-button>
+    <b-container>
+        <b-row>
+            <h3 class="float-left">ADD NEW HABIT</h3>
+
+            <b-button v-b-modal.modal1 class="new-habit">+ new habit</b-button>
+        </b-row>
+
         <!-- Modal Component -->
         <b-modal ref="myModalRef"
                  hide-footer
@@ -31,7 +36,7 @@
 
 
         </b-modal>
-    </div>
+    </b-container>
 </template>
 
 <script>
@@ -70,7 +75,7 @@
                     isAdmin: store.state.isAdmin
                 })
                     .then(response => {
-                        console.log('selected',this.selected)
+                        console.log('selected', this.selected)
                         this.habitId = response.data._id;
                         this.hideModal()
 
@@ -83,7 +88,14 @@
 
     }
 </script>
-<style>
+<style scoped>
+
+    .row {
+        flex-wrap: wrap;
+    }
+    .container {
+        margin: 0 0 40px;
+    }
     .footer {
         margin-top: 20px;
         margin-right: 5px;
@@ -95,6 +107,15 @@
 
     .new-habit {
         background-color: #594458;
+        padding: auto;
+        height: 45px;
+        margin-top: 30px;
+        margin-left: 80px;
+
+    }
+
+    .btn {
+
     }
 
 

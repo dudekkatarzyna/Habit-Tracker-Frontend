@@ -1,9 +1,64 @@
 <template>
-    <div>
+    <b-container>
 
-        <h3 class="float-left">HABITS LIST</h3>
 
-        <b-table striped hover :items="filteredHabits" :fields="fields" class="table">
+        <b-row>
+            <b-col md="6" class="my-1">
+                <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+                    <b-input-group>
+                        <b-form-input v-model="filter" placeholder="Type to Search"></b-form-input>
+                        <b-input-group-append>
+                            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+                        </b-input-group-append>
+                    </b-input-group>
+                </b-form-group>
+            </b-col>
+
+            <b-col md="6" class="my-1">
+                <b-form-group label-cols-sm="3" label="Sort" class="mb-0">
+                    <b-input-group>
+                        <b-form-select v-model="sortBy" :options="sortOptions">
+                            <option slot="first" :value="null">-- none --</option>
+                        </b-form-select>
+                        <b-form-select v-model="sortDesc" :disabled="!sortBy" slot="append">
+                            <option :value="false">Asc</option>
+                            <option :value="true">Desc</option>
+                        </b-form-select>
+                    </b-input-group>
+                </b-form-group>
+            </b-col>
+
+            <b-col md="6" class="my-1">
+                <b-form-group label-cols-sm="3" label="Sort direction" class="mb-0">
+                    <b-input-group>
+                        <b-form-select v-model="sortDirection" slot="append">
+                            <option value="asc">Asc</option>
+                            <option value="desc">Desc</option>
+                            <option value="last">Last</option>
+                        </b-form-select>
+                    </b-input-group>
+                </b-form-group>
+            </b-col>
+
+            <b-col md="6" class="my-1">
+                <b-form-group label-cols-sm="3" label="Per page" class="mb-0">
+                    <b-form-select v-model="perPage" :options="pageOptions"></b-form-select>
+                </b-form-group>
+            </b-col>
+        </b-row>
+
+        <b-table
+                show-empty
+                stacked="md"
+                :current-page="currentPage"
+                :per-page="perPage"
+                :filter="filter"
+                :sort-by.sync="sortBy"
+                :sort-desc.sync="sortDesc"
+                :sort-direction="sortDirection"
+                @filtered="onFiltered"
+
+                striped hover :items="items" :fields="fields" class="table" responsive>
             <template slot="Action" slot-scope="row">
                 <b-button v-on:click="deleteRow(row.index)" size="sm" class="mr-2">
                     Delete
@@ -32,7 +87,18 @@
 
         </b-table>
 
-    </div>
+        <b-row>
+            <b-col md="6" class="my-1">
+                <b-pagination
+                        v-model="currentPage"
+                        :total-rows="totalRows"
+                        :per-page="perPage"
+                        class="my-0"
+                ></b-pagination>
+            </b-col>
+        </b-row>
+    </b-container>
+
 </template>
 
 <script>
@@ -41,6 +107,7 @@
     import ButtonGroup from "@/components/ButtonGroup";
     import {store} from "@/main";
 
+    const items=[];
     export default {
         name: 'app',
         components: {
@@ -51,13 +118,27 @@
             return {
                 checked: '',
                 checkIfDisabled: "checked",
-                fields: ['Name', 'Category', 'Done', 'Date', 'Action'],
-                items: [],
+                fields: [
+                    {key: 'Name', label: 'Name', sortable: true, sortDirection: 'desc'},
+                    {key: 'Category', label: 'Category', sortable: true, class: 'text-center'},
+                    {key: 'Done', label: 'Done', sortable: false, class: 'text-center'},
+                    {key: 'Date', label: 'Date', sortable: false, class: 'text-center'},
+                    {key: 'Action', label: 'Action'}
+                ],
+                items: items,
                 habitsPerUserId: [],
                 habitsDetails: [],
                 selected: [],
-                filter: '',
                 days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+                currentPage: 1,
+                perPage: 5,
+                totalRows: items.length,
+                pageOptions: [5, 10, 15],
+                sortBy: null,
+                sortDesc: false,
+                sortDirection: 'asc',
+                filter: null,
+                modalInfo: {title: '', content: ''}
 
 
             }
@@ -67,12 +148,35 @@
         },
         computed: {
             filteredHabits() {
-                return this.items.filter((habit) =>{
+                return this.items.filter((habit) => {
                     return habit.Name.includes(this.filter)
                 });
+            },
+            sortOptions() {
+                // Create an options list from our fields
+                return this.fields
+                    .filter(f => f.sortable)
+                    .map(f => {
+                        return {text: f.label, value: f.key}
+                    })
             }
         },
         methods: {
+            info(item, index, button) {
+                this.modalInfo.title = `Row index: ${index}`
+                this.modalInfo.content = JSON.stringify(item, null, 2)
+                this.$root.$emit('bv::show::modal', 'modalInfo', button)
+            },
+            resetModal() {
+                this.modalInfo.title = '';
+                this.modalInfo.content = ''
+            },
+            onFiltered(filteredItems) {
+                // Trigger pagination to update the number of buttons/pages due to filtering
+                this.totalRows = filteredItems.length;
+                this.currentPage = 1
+            },
+
             filterChange(filter) {
                 this.filter = filter;
 
@@ -200,6 +304,15 @@
 
 <style scoped>
 
+    .pagination {
+        margin-left: 50px;
+        margin-bottom: 80px !important;
+    }
+    .container{
+        margin: 0 0 0 0;
+       max-width: 100%;
+    }
+
     .form-check-input:disabled ~ .form-check-label {
         color: #212529;
     }
@@ -207,6 +320,7 @@
     .form-check-input:disabled + .form-check-label {
         color: #6c757d;
     }
+
     #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;

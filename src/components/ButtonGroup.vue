@@ -1,23 +1,13 @@
 <template>
-    <div>
-        <div class="container">
-            <b-row>
-                <div class="col-sm-6 text-right">
+
+
+
+
+
                    <NewHabitModal @createdNewHabit="createdNewHabit"/>
-                </div>
-                <div class="col-sm-6 text-right">
 
 
-                    <b-input-group prepend="Search names">
-                        <b-form-input v-model="search" @change="searchName"></b-form-input>
 
-                    </b-input-group>
-
-                </div>
-            </b-row>
-        </div>
-
-    </div>
 </template>
 
 <script>

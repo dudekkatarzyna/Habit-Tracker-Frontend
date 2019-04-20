@@ -1,6 +1,8 @@
 <template>
     <div>
         <Nav :logged-in="true"></Nav>
+
+        <h3>{{connectionStatus}}</h3>
         <div class="container border border-dark">
 
 
@@ -57,8 +59,12 @@
                     username: '',
                     password: ''
                 },
-                show: true
+                show: true,
+                connectionStatus: ''
             }
+        },
+        mounted(){
+            this.checkConnection();
         },
         methods: {
             goBack() {
@@ -66,17 +72,37 @@
                     ? this.$router.go(-1)
                     : this.$router.push('/')
             },
+            checkConnection() {
+
+                setInterval(() =>{
+                    if (navigator.onLine) {
+                        this.connectionStatus = "";
+                    } else {
+                        this.connectionStatus = "Unable to connect to internet.";
+
+                    }
+                },2000 )
+
+            },
             onSubmit(evt) {
+                const username=this.form.username;
+                const password=this.form.password;
+                // this.$store.dispatch('login', { email, password }).then(() => this.$router.push('/'))
 
                 axios.post('http://localhost:8080/login', {username: this.form.username, password: this.form.password})
                     .then(response => {
 
-                        //mutations
-                        console.log(response.data._id)
-                        console.log(response.data.admin)
+                            //mutations
 
-                        this.$store.commit('setUserId', response.data._id)
-                        this.$store.commit('setAdmin', response.data.admin)
+                            // this.$store.dispatch('login', { thi, password })
+                            //     .then(() => this.$router.push('/'))
+                            //     .catch(err => console.log(err))
+
+                            console.log(response.data._id)
+                            console.log(response.data.admin)
+
+                            this.$store.commit('setUserId', response.data._id)
+                            this.$store.commit('setAdmin', response.data.admin)
 
 
                             if (response.data.admin) {
@@ -107,6 +133,11 @@
     }
 </script>
 <style scoped>
+    h3 {
+        padding-right: 94px;
+        color: red;
+    }
+
     h1 {
         margin-bottom: 40px;
     }
