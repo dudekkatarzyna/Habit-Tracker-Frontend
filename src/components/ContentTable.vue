@@ -28,17 +28,17 @@
                 </b-form-group>
             </b-col>
 
-            <b-col md="6" class="my-1">
-                <b-form-group label-cols-sm="3" label="Sort direction" class="mb-0">
-                    <b-input-group>
-                        <b-form-select v-model="sortDirection" slot="append">
-                            <option value="asc">Asc</option>
-                            <option value="desc">Desc</option>
-                            <option value="last">Last</option>
-                        </b-form-select>
-                    </b-input-group>
-                </b-form-group>
-            </b-col>
+            <!--<b-col md="6" class="my-1">-->
+                <!--<b-form-group label-cols-sm="3" label="Sort direction" class="mb-0">-->
+                    <!--<b-input-group>-->
+                        <!--<b-form-select v-model="sortDirection" slot="append">-->
+                            <!--<option value="asc">Asc</option>-->
+                            <!--<option value="desc">Desc</option>-->
+                            <!--<option value="last">Last</option>-->
+                        <!--</b-form-select>-->
+                    <!--</b-input-group>-->
+                <!--</b-form-group>-->
+            <!--</b-col>-->
 
             <b-col md="6" class="my-1">
                 <b-form-group label-cols-sm="3" label="Per page" class="mb-0">
@@ -106,6 +106,7 @@
     import axios from "axios";
     import ButtonGroup from "@/components/ButtonGroup";
     import {store} from "@/main";
+    import {createJWTHeader, decodeLocalJWT} from "@/jwt";
 
     const items=[];
     export default {
@@ -163,8 +164,8 @@
         },
         methods: {
             info(item, index, button) {
-                this.modalInfo.title = `Row index: ${index}`
-                this.modalInfo.content = JSON.stringify(item, null, 2)
+                this.modalInfo.title = `Row index: ${index}`;
+                this.modalInfo.content = JSON.stringify(item, null, 2);
                 this.$root.$emit('bv::show::modal', 'modalInfo', button)
             },
             resetModal() {
@@ -196,7 +197,7 @@
                 axios.put(`http://localhost:8080/habitsperuser/${habitId}/update`, {date})
                     .then((response) => {
                         // console.log(response)
-                    })
+                    });
 
 
                 this.items[index].Date = this.items[index].Date.concat(", " + this.formatDate(date))
@@ -216,7 +217,7 @@
             },
             deleteRow(index) {
                 // console.log(`http://localhost:8080/habitsPerUser/${this.habitsPerUserId[index]}/delete`)
-                axios.delete(`http://localhost:8080/habitsPerUser/${this.habitsPerUserId[index]}/delete`)
+                axios.delete(`http://localhost:8080/habitsPerUser/${this.habitsPerUserId[index]}/delete`);
 
                 axios.post(`http://localhost:8080/user/deleteHabit/${this.habitsPerUserId[index]}`, {
                     userId: store.state.userId,
@@ -232,18 +233,19 @@
 
             },
             async getHabitDetails() {
-                const response = await axios.get(`http://localhost:8080/user/${store.state.userId}`)
 
-                console.log(response)
+                const decoded = decodeLocalJWT();
+                const response = await axios.get(`http://localhost:8080/user/${decoded.userId}`);
+
                 this.habitsPerUserId = response.data.habitsPerUserId;
 
 
                 for (let i = 0; i < this.habitsPerUserId.length; i++) {
 
                     const habitCheckboxes = [];
-                    console.log("here", this.habitsPerUserId[i])
 
-                    const response = await axios.get(`http://localhost:8080/habitsPerUser/details/${this.habitsPerUserId[i]}`)
+
+                    const response = await axios.get(`http://localhost:8080/habitsPerUser/details/${this.habitsPerUserId[i]}`);
 
                     for (let j = 0; j < 5; j++) {
                         const completionDate = this.getDate(new Date(), j);
@@ -269,7 +271,7 @@
                         }
                     );
 
-                    const responseDetails = await axios.get(`http://localhost:8080/category/details/${this.items[i].Category}`)
+                    const responseDetails = await axios.get(`http://localhost:8080/category/details/${this.items[i].Category}`);
 
                     this.items[i].Category = responseDetails.data.name;
 
@@ -308,9 +310,9 @@
         margin-left: 50px;
         margin-bottom: 80px !important;
     }
-    .container{
-        margin: 0 0 0 0;
-       max-width: 100%;
+    .container-fluid{
+        margin-top: 40px !important;
+        max-width: 100%;
     }
 
     .form-check-input:disabled ~ .form-check-label {

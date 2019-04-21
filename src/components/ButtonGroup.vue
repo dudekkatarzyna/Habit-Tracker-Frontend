@@ -1,12 +1,7 @@
 <template>
 
 
-
-
-
-                   <NewHabitModal @createdNewHabit="createdNewHabit"/>
-
-
+    <NewHabitModal @createdNewHabit="createdNewHabit"/>
 
 </template>
 
@@ -25,13 +20,8 @@
         },
         methods: {
             createdNewHabit(habit) {
-                console.log(habit)
                 this.$emit('createdNewHabit', habit)
             },
-            searchName(){
-                console.log('search',this.search)
-                this.$emit('filterChange',this.search)
-            }
         }
 
     }

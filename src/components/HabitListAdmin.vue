@@ -44,7 +44,7 @@
         methods: {
             deleteRow(index) {
                 // console.log(`http://localhost:8080/habitsPerUser/${this.habitsPerUserId[index]}/delete`)
-                axios.delete(`http://localhost:8080/habitsPerUser/${this.habitsPerUserId[index]}/delete`)
+                axios.delete(`http://localhost:8080/habitsPerUser/${this.habitsPerUserId[index]}/delete`);
 
                 axios.post(`http://localhost:8080/user/deleteHabit/${this.habitsPerUserId[index]}`, {
                     userId: store.state.userId,
@@ -66,7 +66,7 @@
                         for (const id in response.data) {
                             const habit = response.data[id];
 
-                            const category = await axios.get(`http://localhost:8080/category/details/${habit.categoryId}`)
+                            const category = await axios.get(`http://localhost:8080/category/details/${habit.categoryId}`);
 
                             this.items.push({
                                 UserId: habit.userId,
@@ -105,10 +105,6 @@
     .table {
         max-width: 96%;
         margin: 2% 2% 2% 2%;
-    }
-
-    .col-md-12 {
-        padding: 2%;
     }
 
     h3 {

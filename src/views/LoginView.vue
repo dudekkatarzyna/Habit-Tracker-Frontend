@@ -41,6 +41,7 @@
 
     import axios from "axios";
     import Nav from "@/components/Nav";
+    import VueJwtDecode from 'vue-jwt-decode'
 
 
     export default {
@@ -63,7 +64,7 @@
                 connectionStatus: ''
             }
         },
-        mounted(){
+        mounted() {
             this.checkConnection();
         },
         methods: {
@@ -74,38 +75,34 @@
             },
             checkConnection() {
 
-                setInterval(() =>{
+                setInterval(() => {
                     if (navigator.onLine) {
                         this.connectionStatus = "";
                     } else {
                         this.connectionStatus = "Unable to connect to internet.";
 
                     }
-                },2000 )
+                }, 2000)
 
             },
             onSubmit(evt) {
-                const username=this.form.username;
-                const password=this.form.password;
+                const username = this.form.username;
+                const password = this.form.password;
                 // this.$store.dispatch('login', { email, password }).then(() => this.$router.push('/'))
 
                 axios.post('http://localhost:8080/login', {username: this.form.username, password: this.form.password})
                     .then(response => {
 
-                            //mutations
 
-                            // this.$store.dispatch('login', { thi, password })
-                            //     .then(() => this.$router.push('/'))
-                            //     .catch(err => console.log(err))
-
-                            console.log(response.data._id)
-                            console.log(response.data.admin)
-
-                            this.$store.commit('setUserId', response.data._id)
-                            this.$store.commit('setAdmin', response.data.admin)
+                            const decoded = VueJwtDecode.decode(response.data);
 
 
-                            if (response.data.admin) {
+                            this.$store.commit("setUserId", decoded.userId);
+                            this.$store.commit("setAdmin", decoded.isAdmin);
+
+                            localStorage.setItem("jwt", response.data);
+
+                            if (decoded.isAdmin) {
                                 this.$router.push('/admin')
                             } else {
                                 this.$router.push('/dashboard')
@@ -114,17 +111,17 @@
                         error => {
                             this.$router.push('/login');
                             this.onReset(evt);
-                        })
+                        });
                 evt.preventDefault()
 
             },
             onReset(evt) {
-                evt.preventDefault()
+                evt.preventDefault();
                 /* Reset our form values */
                 this.form.username = '';
                 this.form.password = '';
                 /* Trick to reset/clear native browser form validation state */
-                this.show = false
+                this.show = false;
                 this.$nextTick(() => {
                     this.show = true
                 })

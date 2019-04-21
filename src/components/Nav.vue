@@ -24,6 +24,9 @@
             logout() {
 
                 this.$store.commit('setUserId', null);
+                this.$store.commit('setAdmin', false);
+
+                localStorage.removeItem("jwt");
                 this.$router.push('/')
 
 

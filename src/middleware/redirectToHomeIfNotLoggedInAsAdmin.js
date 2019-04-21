@@ -1,15 +1,12 @@
-import {store} from "@/main";
-
+import {decodeLocalJWT} from "@/jwt";
 
 
 const redirectToHomeIfNotLoggedInAsAdmin = (req, res, next) => {
 
-    console.log(store.getters.isAdmin)
-    if (!store.getters.isAdmin) {
-        return false
-    } else {
-        return true;
-    }
+   // console.log("redirectToHomeIfNotLoggedInAsAdmin")
+    const decodedToken=decodeLocalJWT();
+
+    return decodedToken.isAdmin;
 };
 
 export default redirectToHomeIfNotLoggedInAsAdmin;

@@ -66,8 +66,6 @@
             },
             submit() {
 
-                console.log(this.selected)
-                console.log(this.options)
                 axios.post('http://localhost:8080/habitsperuser/create', {
                     habitName: this.form.name,
                     category: this.selected,
@@ -75,9 +73,8 @@
                     isAdmin: store.state.isAdmin
                 })
                     .then(response => {
-                        console.log('selected', this.selected)
                         this.habitId = response.data._id;
-                        this.hideModal()
+                        this.hideModal();
 
                         this.$emit('createdNewHabit', response.data)
                     })

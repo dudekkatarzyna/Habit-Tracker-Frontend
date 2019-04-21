@@ -26,7 +26,6 @@
         },
         methods: {
             createdNewHabit(habit){
-                console.log(habit);
                 this.$refs.contentTable.append(habit);
             },
             filterChange(filter){
@@ -71,10 +70,6 @@
     .table {
         max-width: 96%;
         margin: 2% 2% 2% 2%;
-    }
-
-    .col-md-12 {
-        padding: 2%;
     }
 
     h3 {

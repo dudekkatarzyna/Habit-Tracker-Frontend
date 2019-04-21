@@ -1,19 +1,20 @@
-import {store} from "@/main";
-import axios from "axios";
+import {decodeLocalJWT} from "@/jwt";
 
-const redirectToDashboardOrAdminIfLoggedIn = (req, res, next) => {
+const redirectToDashboardOrAdminIfLoggedIn = () => {
 
+    console.log("redirectToDashboardOrAdminIfLoggedIn");
+    const decodedToken=decodeLocalJWT();
 
-    if (store.getters.userId) {
+    if (decodedToken.userId) {
 
-        if (store.getters.isAdmin) {
+        if (decodedToken.isAdmin) {
             return 'admin'
         } else {
             return 'dashboard'
         }
 
     }
-    return ''
+    return undefined
 };
 
 export default redirectToDashboardOrAdminIfLoggedIn;

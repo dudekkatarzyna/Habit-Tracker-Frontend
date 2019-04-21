@@ -27,17 +27,17 @@
                 </b-form-group>
             </b-col>
 
-            <b-col md="6" class="my-1">
-                <b-form-group label-cols-sm="3" label="Sort direction" class="mb-0">
-                    <b-input-group>
-                        <b-form-select v-model="sortDirection" slot="append">
-                            <option value="asc">Asc</option>
-                            <option value="desc">Desc</option>
-                            <option value="last">Last</option>
-                        </b-form-select>
-                    </b-input-group>
-                </b-form-group>
-            </b-col>
+            <!--<b-col md="6" class="my-1">-->
+            <!--<b-form-group label-cols-sm="3" label="Sort direction" class="mb-0">-->
+            <!--<b-input-group>-->
+            <!--<b-form-select v-model="sortDirection" slot="append">-->
+            <!--<option value="asc">Asc</option>-->
+            <!--<option value="desc">Desc</option>-->
+            <!--<option value="last">Last</option>-->
+            <!--</b-form-select>-->
+            <!--</b-input-group>-->
+            <!--</b-form-group>-->
+            <!--</b-col>-->
 
             <b-col md="6" class="my-1">
                 <b-form-group label-cols-sm="3" label="Per page" class="mb-0">
@@ -146,8 +146,8 @@
         },
         methods: {
             info(item, index, button) {
-                this.modalInfo.title = `Row index: ${index}`
-                this.modalInfo.content = JSON.stringify(item, null, 2)
+                this.modalInfo.title = `Row index: ${index}`;
+                this.modalInfo.content = JSON.stringify(item, null, 2);
                 this.$root.$emit('bv::show::modal', 'modalInfo', button)
             },
             resetModal() {
@@ -167,7 +167,9 @@
                         for (const id in response.data) {
                             const habit = response.data[id];
 
-                            const category = await axios.get(`http://localhost:8080/category/details/${habit.categoryId}`)
+                            console.log(habit);
+
+                            const category = await axios.get(`http://localhost:8080/category/details/${habit.categoryId}`);
 
                             this.habits.push({
                                 UserId: habit.userId,
@@ -195,7 +197,7 @@
 
                                 for (const habit in user.habitsPerUserId) {
 
-                                    const habitDetails = await axios.get(`http://localhost:8080/habitsperuser/details/${user.habitsPerUserId[habit]}`)
+                                    const habitDetails = await axios.get(`http://localhost:8080/habitsperuser/details/${user.habitsPerUserId[habit]}`);
 
                                     //  habitsDoneDates.push(habitDetails.data.done)
                                     //   habitNames.push(habitDetails.data.name)
@@ -232,7 +234,7 @@
     }
 </script>
 
-<style >
+<style>
 
     .container-fluid {
         margin-top: 5%;
@@ -241,6 +243,7 @@
     .b-table {
         margin-top: 50px;
     }
+
     h3 {
         position: static;
         padding-left: 7%;

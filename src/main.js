@@ -10,7 +10,7 @@ import RegisterView from "@/views/RegisterView";
 import AdminView from "@/views/AdminView";
 import HomeView from "@/views/HomeView";
 import Vuex from "vuex";
-import createPersistedState from 'vuex-persistedstate'
+import axios from "axios";
 
 import redirectToHomeIfNotLoggedIn from "./middleware/redirectToHomeIfNotLoggedIn";
 import redirectToDashboardOrAdminIfLoggedIn from "./middleware/redirectToDashboardOrAdminIfLoggedIn";
@@ -22,16 +22,19 @@ Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(Vuex);
 
+if (localStorage.getItem("jwt")) {
+    axios.defaults.headers.common['Authorization'] = localStorage.getItem('jwt');
+}
 
+//TODO
 export const store = new Vuex.Store({
     state: {
         userId: null,
         isAdmin: false
     },
-    plugins: [createPersistedState()],
     mutations: {
         setUserId(state, userId) {
-            console.log(userId);
+          //  console.log(userId);
             state.userId = userId;
         },
         resetUserId(state) {
@@ -48,7 +51,7 @@ export const store = new Vuex.Store({
         userId(state) {
             return state.userId;
         },
-        isAdmin(state){
+        isAdmin(state) {
             return state.isAdmin;
         }
     }
@@ -59,15 +62,16 @@ const routes = [
         path: '/',
         component: HomeView,
         beforeEnter: (to, from, next) => {
-            console.log('middle')
-            if (redirectToDashboardOrAdminIfLoggedIn() === 'admin') {
-                console.log('admin')
-                next('/admin')
-            } else if (redirectToDashboardOrAdminIfLoggedIn() === 'dashboard') {
-                next('/dashboard')
-            } else {
-                next()
-            }
+            next(redirectToDashboardOrAdminIfLoggedIn())
+            // if ( === 'admin') {
+            //     console.log('admin')
+            //     next('/admin')
+            // } else if (redirectToDashboardOrAdminIfLoggedIn() === 'dashboard') {
+            //     next('/dashboard')
+            // } else {
+            //     next()
+            // }
+
         }
     },
     {
@@ -84,7 +88,6 @@ const routes = [
     {
         path: '/admin', component: AdminView, beforeEnter: (to, from, next) => {
             if (redirectToHomeIfNotLoggedInAsAdmin()) {
-                console.log('hmm')
                 next();
             } else {
                 next('/')
@@ -93,7 +96,7 @@ const routes = [
     },
     {path: '/login', component: LoginView},
     {path: '/register', component: RegisterView}
-]
+];
 
 const router = new VueRouter({
     mode: 'history',
@@ -107,7 +110,7 @@ new Vue({
     store,
     render: h => h(App),
 
-}).$mount('#app')
+}).$mount('#app');
 
 
 

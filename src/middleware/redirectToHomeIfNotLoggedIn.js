@@ -1,13 +1,11 @@
-import {store} from "./../main.js";
+import {decodeLocalJWT} from "@/jwt";
 
 const redirectToHomeIfNotLoggedIn = (req, res, next) => {
 
-    if (store.getters.userId) {
-        return true;
-       // next();
-    } else {
-        return false;
-    }
+   // console.log("redirectToHomeIfNotLoggedIn")
+    const decodedToken=decodeLocalJWT();
+
+    return !!decodedToken.userId;
 };
 
 export default redirectToHomeIfNotLoggedIn;

@@ -8,9 +8,6 @@
 
 <script>
     import Header from "@/components/Header";
-    import axios from "axios";
-    import ButtonGroup from "@/components/ButtonGroup";
-    import ContentTable from "@/components/ContentTable";
     import Nav from "@/components/Nav";
 
     export default {
@@ -47,10 +44,6 @@
     .table {
         max-width: 96%;
         margin: 2% 2% 2% 2%;
-    }
-
-    .col-md-12 {
-        padding: 2%;
     }
 
     h3 {

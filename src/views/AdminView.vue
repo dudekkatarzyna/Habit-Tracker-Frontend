@@ -7,7 +7,7 @@
         <!--<ButtonGroup/>-->
 
         <UserList/>
-        <HabitListAdmin/>
+        <!--<HabitListAdmin/>-->
     </div>
 </template>
 
@@ -15,7 +15,6 @@
     import Header from "@/components/Header";
     import axios from "axios";
     import ButtonGroup from "@/components/ButtonGroup";
-    import ContentTable from "@/components/ContentTable";
     import Nav from "@/components/Nav";
     import UserList from "@/components/UserList";
     import HabitListAdmin from "@/components/HabitListAdmin";
@@ -51,15 +50,7 @@
                 })
 
         },
-        methods: {
-            getNumerOfUsers() {
-                axios.post('http://localhost:8080/api/user-count')
-                    .then(response => {
-                        //  console.log(response);
-                        this.numerOfUsers = response.data
-                    })
-            }
-        }
+        methods: {}
 
     }
 </script>
@@ -81,10 +72,6 @@
     .table {
         max-width: 96%;
         margin: 2% 2% 2% 2%;
-    }
-
-    .col-md-12 {
-        padding: 2%;
     }
 
     h3 {

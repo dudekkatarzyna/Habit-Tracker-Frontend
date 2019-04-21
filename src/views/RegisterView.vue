@@ -117,14 +117,13 @@
                     habitsPerUserId: []
                 })
                     .then(response => {
-                        console.log(response)
                         this.$router.push('/dashboard')
                     })
                     .catch(error => {
-                        console.log('error')
+                        console.log('error');
                         this.errorMsg = "User with this username already exists!";
                         this.onReset();
-                    })
+                    });
                 evt.preventDefault()
             },
             onReset() {
@@ -134,7 +133,7 @@
                 this.form.password = '';
                 this.form.confirmPassword = '';
                 /* Trick to reset/clear native browser form validation state */
-                this.show = false
+                this.show = false;
                 this.$nextTick(() => {
                     this.show = true
                 })
